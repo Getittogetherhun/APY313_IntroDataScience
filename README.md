@@ -1,30 +1,5 @@
----
 title: "Intersectionality and Dialogue"
 author: "Kesia Otieno"
-date: "`r format(Sys.time(), '%d %B, %Y')`" 
-output: 
-  prettydoc::html_pretty:
-    toc: true
-    theme: architect
-    highlight: github 
-bibliography: practicum_bibliography.bib
----
-
-```{r setup, echo =FALSE}
-knitr::opts_chunk$set(fig.align = 'center',out.width = '100%', echo = TRUE)
-```
-
-```{r data, echo = FALSE}
-library(readr)
-library(dplyr)
-library(ggplot2)
-library(tidyverse)
-library(knitr)
-library(tidytext)
-library("data.table")
-library("bibtex")
-library(readxl) 
-```
 
 # Introduction 
 
@@ -52,45 +27,7 @@ The chosen significance level is an alpha of 0.05.
 
 ## Collecting Data
 
-  The data set is from Harvard's [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set. The [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set originates from a previous data set of screenplays with 780 films on gender and dialogue conducted by Hannah Anderson and Matt Daniel at the Pudding [@Anderson2016-pd]. The [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set took the data set from The Pudding and incorporated the variable of Race [@DVN/KERZQY_2018]. As Noted in the section below I removed several variables that were not necessary for the data analysis I was conducting.I then used the wilcox.test() function to generate test statistics to use in my analysis.
-
-```{r, echo = FALSE}
-library(readxl)
-actors <- read_excel("actors.xlsx", col_types = c("numeric", 
-    "text", "text", "text", "text", "text", 
-    "numeric", "numeric"), na = "NA")
-View(actors)
-```
-
-```{r Renaming Gender, include = FALSE}
-actors[actors$GENDER == "f", "GENDER"] <- "Women"
-actors[actors$GENDER == "m", "GENDER"] <- "Men" 
-```
-
-```{r Renaming Character Race, include = FALSE}
-actors[actors$CHARACTER_RACE == "b", "CHARACTER_RACE"] <- "Black" 
-actors[actors$CHARACTER_RACE == "a", "CHARACTER_RACE"] <- "East Asian"
-actors[actors$CHARACTER_RACE == "i", "CHARACTER_RACE"] <- "Indigenous"
-actors[actors$CHARACTER_RACE == "l", "CHARACTER_RACE"] <- "Latinx"
-actors[actors$CHARACTER_RACE == "n", "CHARACTER_RACE"] <- "Near Eastern"
-actors[actors$CHARACTER_RACE == "s", "CHARACTER_RACE"] <- "South Asian"
-actors[actors$CHARACTER_RACE == "w", "CHARACTER_RACE"] <- "White"
-```
-
-```{r Removing Unnecessary Columns, include = FALSE}
-actors2 <- subset(actors, select = -c(SCRIPT_ID,CHARACTER_NAME,ACTOR_NAME,ACTOR_RACE)) 
-```
-
-```{r Adding New Gender+Race Column, include= FALSE}
-actorsFINAL <- actors2 %>% unite("Gender_Race", CHARACTER_RACE:GENDER, remove = FALSE) 
-actorsFINAL$Gender_Race <- factor(actorsFINAL$Gender_Race, levels=c('Black_Women', 'Black_Men', 'East Asian_Women', 'East Asian_Men', 'Indigenous_Women','Indigenous_Men',"Latinx_Women", 'Latinx_Men','Near Eastern_Women','Near Eastern_Men', 'South Asian_Women', 'South Asian_Men','White_Women', 'White_Men'))
-```
-
-```{r, echo = FALSE}
-ggplot(actorsFINAL, aes(x = Gender_Race, y = POLYGRAPH_.WORDS, color = Gender_Race)) + geom_boxplot() + coord_flip() + scale_y_log10() + labs(title = "Race+Gender Relation with Polygraph Words", x = "Race+Gender", y = "Polygraph words")
-
-```
- 
+  The data set is from Harvard's [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set. The [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set originates from a previous data set of screenplays with 780 films on gender and dialogue conducted by Hannah Anderson and Matt Daniel at the Pudding [@Anderson2016-pd]. The [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set took the data set from The Pudding and incorporated the variable of Race [@DVN/KERZQY_2018]. As Noted in the section below I removed several variables that were not necessary for the data analysis I was conducting.I then used the wilcox.test() function to generate test statistics to use in my analysis
 
 ## Purpose For Plots & Test   
 
@@ -98,20 +35,6 @@ ggplot(actorsFINAL, aes(x = Gender_Race, y = POLYGRAPH_.WORDS, color = Gender_Ra
 
   I used the Shapiro-Wilk Test and generated a histogram for each unique Race+Gender category I intended to use. Both methods illustrated that my individualized data sets did not have a normal distribution. Due to my data nor having a normal distribution I sought out a Non-Parametric Analysis to compare outcomes between two independent variables. I opted for a non-directional or two-tailed U-test as the possible directionality was not something I wanted to be specified.  
 
-```{r - Create Data Set - Actors & Polygraph, include = FALSE }
-actors_polygraph <- subset(actorsFINAL, select = -c(GENDER,AGE,CHARACTER_RACE))
-```
-  
-```{r Filtering out White Actors- , echo = FALSE}
-actors_polygraph_graph <- actors_polygraph[actors_polygraph$Gender_Race != "White_Men",] 
-actors_polygraph_graph2 <- actors_polygraph_graph[actors_polygraph_graph$Gender_Race != "White_Women",] 
-```
-
-```{r, echo=FALSE}
-ggplot(actors_polygraph_graph2, aes(y = POLYGRAPH_.WORDS, color = Gender_Race)) + geom_histogram(bins = 13) + scale_y_log10() + facet_wrap(~ Gender_Race) +labs(title = "Race+Gender & Polygraph Words Distribution", x = "Count", y = "Polygraph Word") 
-
-# Important Note ! Please note I removed the Grid Histogram Plots of White_Women and White_Men because there n values were so high you could not view the counts for any other race+gender group. Additionally, there is no visualization of Near Eastern Characters because there was no observations of Near Eastern Women characters.
-```
 
 ### Pie Chart - Still Pending...
 
@@ -136,120 +59,6 @@ For Modeling the Data I utilized several r packages:
 -   readxl
 
 # Results 
-
-```{r Mann-Whitney-Wilcoxon Test- Black Characters, echo = FALSE}
-
-BlackWomen <- actors_polygraph %>% filter(Gender_Race == "Black_Women")  
-BlackMen <- actors_polygraph %>% filter(Gender_Race == "Black_Men") 
-
-BW_Words <- c(BlackWomen$POLYGRAPH_.WORDS) 
-BM_Words <- c(BlackMen$POLYGRAPH_.WORDS) 
-
-length(BW_Words) <- length(BM_Words)
-
-Black_Characters <- data.frame(BW_Words,BM_Words) 
-
-wilcox.test(BW_Words, BM_Words, data=Black_Characters)
-
-```
-
-```{r Mann-Whitney-Wilcoxon Test- East Asian Characters, echo = FALSE}
-
-EastAsian_Women <- actors_polygraph %>% filter(Gender_Race == "East Asian_Women")  
-EastAsian_Men <- actors_polygraph %>% filter(Gender_Race == "East Asian_Men") 
-
-EAW_Words <- c(EastAsian_Women$POLYGRAPH_.WORDS) 
-EAM_Words <- c(EastAsian_Men$POLYGRAPH_.WORDS) 
-
-length(EAW_Words) <- length(EAM_Words)
-
-EastAsian_Characters <- data.frame(EAW_Words,EAM_Words) 
-
-wilcox.test(EAW_Words, EAM_Words, data=EastAsian_Characters)
-
-```
-
-```{r Mann-Whitney-Wilcoxon Test- Indigenous Characters, echo = FALSE}
-
-IndigenousWomen <- actors_polygraph %>% filter(Gender_Race == "Indigenous_Women")
-
-IndigenousMen <- actors_polygraph %>% filter(Gender_Race == "Indigenous_Men") 
-
-IW_Words <- c(IndigenousWomen$POLYGRAPH_.WORDS) 
-IM_Words <- c(IndigenousMen$POLYGRAPH_.WORDS) 
-
-length(IW_Words) <- length(IM_Words)
-
-Indigenous_Characters <- data.frame(IW_Words,IM_Words) 
-
-wilcox.test(IW_Words, IM_Words, data = Indigenous_Characters)
-
-```
-
-```{r Mann-Whitney-Wilcoxon Test- Latinx Characters, echo = FALSE}
-
-LatinxWomen <- actors_polygraph %>% filter(Gender_Race == "Latinx_Women")  
-LatinxMen <- actors_polygraph %>% filter(Gender_Race == "Latinx_Men") 
-
-LW_Words <- c(LatinxWomen$POLYGRAPH_.WORDS) 
-LM_Words <- c(LatinxMen$POLYGRAPH_.WORDS) 
-
-length(LW_Words) <- length(LM_Words)
-
-Latinx_Characters <- data.frame(LW_Words,LM_Words) 
-
-wilcox.test(LW_Words, LM_Words, data=Latinx_Characters)
-
-```
-
-```{r Mann-Whitney-Wilcoxon Test- South Asian Characters, echo = FALSE}
-
-SouthAsian_Women <- actors_polygraph %>% filter(Gender_Race == "South Asian_Women")  
-SouthAsian_Men <- actors_polygraph %>% filter(Gender_Race == "South Asian_Men") 
-
-SAW_Words <- c(SouthAsian_Women$POLYGRAPH_.WORDS) 
-SAM_Words <- c(SouthAsian_Men$POLYGRAPH_.WORDS) 
-
-length(SAW_Words) <- length(SAM_Words)
-
-SouthAsian_Characters <- data.frame(SAW_Words,SAM_Words) 
-
-wilcox.test(SAW_Words, SAM_Words, data=SouthAsian_Characters, exact = FALSE)
-
-``` 
-
-```{r Mann-Whitney-Wilcoxon Test- White Characters, echo = FALSE}
-
-White_Women <- actors_polygraph %>% filter(Gender_Race == "White_Women")  
-White_Men <- actors_polygraph %>% filter(Gender_Race == "White_Men") 
-
-WW_Words <- c(White_Women$POLYGRAPH_.WORDS) 
-WM_Words <- c(White_Men$POLYGRAPH_.WORDS) 
-
-length(WW_Words) <- length(WM_Words)
-
-White_Characters <- data.frame(WW_Words,WM_Words) 
-
-wilcox.test(WW_Words, WM_Words, data = White_Characters)
-
-# Mann-Whitney-Wilcoxon Test- White Characters
-
-``` 
-
-
-```{r Table of U Test Statistic, echo = FALSE}
-
-library(readxl)
-Utest <- read_excel("Utest.xlsx", col_types = c("text", 
-    "numeric", "text"))
-View(Utest)
-
-"Table 1.1 p-Value calculated for Race+Gender using the Mann-Whitney U Test"
-
-kable(Utest)
-
-
-```
 
   With this table we can observe that we failed to reject the null hypothesis in all cases except for the comparison between Latinx Women and Latinx Men. In the case of Latinx characters, the p-value was less than out set alpha level so we reject the null hypothesis.
 
@@ -279,3 +88,12 @@ kable(Utest)
   With new concepts such as The DuVernay Test up and coming it will be interesting to see if speaking parts could possibly increase or decrease positive representation in film for minorities. Additionally, although probably rather very difficult and time consuming, I hope to see more intersectionality analysis when determining representation in film. 
   
 # Bibliography 
+
+Anderson, Hanah, and Matt Daniels. 2016. Film Dialogue: The Largest Ever Analysis of Film Dialogue. The Pudding.
+Erigha, Maryann. 2015. “Race, Gender, Hollywood: Representation in Cultural Production and Digital Media’s Potential for Change.” Sociol. Compass 9 (1): 78–89.
+Gray, J R A T. 2016. Diversity in Hollywood: Failure of Inclusion Plagues the Entire Industry. Variety Magazine. New York City: Variety. Web.
+Massie, Victoria M. 2016. “Want to Measure a Film’s Diversity? Try "the Duvernay Test.".” Vox. Vox. https://www.vox.com/2016/2/1/10888212/duvernay-test-movie-diversity.
+Ross, Shawna. n.d. “A Bechdel Test for# MLA16.”
+Smith, Stacy L, Marc Choueti, and Katherine Pieper. 2007. Inequality in 900 Popular Films: Examining Portrayals of Gender, Race/Ethnicity, LGBT, and Disability from 2007-2016.
+Sutherland, Jean-Anne, and Kathryn M Feltey. 2017. “Here’s Looking at Her: An Intersectional Analysis of Women, Power and Feminism in Film.” Journal of Gender Studies 26 (6): 618–31.
+Svaikovsky, Victoria, Anne Meisner, Eve Kraicer, and Matthew Sims. 2018. “Racial Lines.” Harvard Dataverse. https://doi.org/10.7910/DVN/KERZQY.
