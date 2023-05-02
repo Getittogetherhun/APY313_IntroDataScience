@@ -10,11 +10,11 @@ output:
 bibliography: practicum_bibliography.bib
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo =FALSE}
 knitr::opts_chunk$set(fig.align = 'center',out.width = '100%', echo = TRUE)
 ```
 
-```{r data, include = FALSE}
+```{r data, echo = FALSE}
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -54,7 +54,7 @@ The chosen significance level is an alpha of 0.05.
 
   The data set is from Harvard's [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set. The [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set originates from a previous data set of screenplays with 780 films on gender and dialogue conducted by Hannah Anderson and Matt Daniel at the Pudding [@Anderson2016-pd]. The [**Racial lines**](file:///C:/Users/kesia/Downloads/Racial_Lines_2018%20(2).pdf) data set took the data set from The Pudding and incorporated the variable of Race [@DVN/KERZQY_2018]. As Noted in the section below I removed several variables that were not necessary for the data analysis I was conducting.I then used the wilcox.test() function to generate test statistics to use in my analysis.
 
-```{r, include = FALSE}
+```{r, echo = FALSE}
 library(readxl)
 actors <- read_excel("actors.xlsx", col_types = c("numeric", 
     "text", "text", "text", "text", "text", 
