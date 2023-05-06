@@ -84,11 +84,6 @@ ggplot(actors_polygraph_graph2, aes(y = POLYGRAPH_.WORDS, color = Gender_Race)) 
 
 # Important Note ! Please note I removed the Grid Histogram Plots of White_Women and White_Men because there n values were so high you could not view the counts for any other race+gender group. Additionally, there is no visualization of Near Eastern Characters because there was no observations of Near Eastern Women characters.
 ```
-
-### Pie Chart - Still Pending...
-
-  While it is true pie charts are not the best tool for proper data visualization it does come in handy when providing legible visualization. The Pie Chart created is to show the reader the percentage of each demographic present in the data set and compare it to the U.S. Census data to represent how certain groups are over represented.
-
 ### Box Plot
 
   The Box Plot used in the "Collecting Data" section was utilized to provide a summary of the distribution of the Polygraph words and to highlight any outliers.
